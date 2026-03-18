@@ -1,0 +1,13 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Environment / secrets
+.env
+
+# Chroma / vector index persistence (we'll create this later)
+data/index/
+
+# OS
+.DS_Store
