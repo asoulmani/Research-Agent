@@ -1,3 +1,6 @@
+"""
+Ingest documents: read text and PDF files, convert to text, and chunk.
+"""
 from pathlib import Path
 from typing import Dict, List
 

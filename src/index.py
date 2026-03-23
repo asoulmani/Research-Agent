@@ -6,7 +6,8 @@ from __future__ import annotations
 import os
 from typing import Any, Dict, List
 
-from dotenv import load_dotenv
+import chromadb
+from chromadb.utils import embedding_functions
 
 from . import config
 
@@ -24,8 +25,6 @@ def _require_api_key() -> str:
 
 
 def _embedding_function():
-    from chromadb.utils import embedding_functions
-
     return embedding_functions.OpenAIEmbeddingFunction(
         api_key=_require_api_key(),
         model_name=config.DEFAULT_EMBEDDING_MODEL,
@@ -34,8 +33,6 @@ def _embedding_function():
 
 def _client():
     config.INDEX_DIR.mkdir(parents=True, exist_ok=True)
-    import chromadb
-
     return chromadb.PersistentClient(path=str(config.INDEX_DIR))
 
 
@@ -50,6 +47,7 @@ def index_documents(chunked: Dict[str, List[str]]) -> int:
     ef = _embedding_function()
     client = _client()
 
+    # Delete collection if it exists to avoid duplicates
     try:
         client.delete_collection(COLLECTION_NAME)
     except Exception:
@@ -69,7 +67,7 @@ def index_documents(chunked: Dict[str, List[str]]) -> int:
         for i, text in enumerate(chunks):
             if not text.strip():
                 continue
-            ids.append(f"{doc_name}::{i}")
+            ids.append(f"{doc_name}::{i}")  # Unique identifier for each chunk
             documents.append(text)
             metadatas.append(
                 {
@@ -115,7 +113,7 @@ def query_index(question: str, n_results: int = 5) -> List[Dict[str, Any]]:
     if cnt == 0:
         return []
 
-    k = min(n_results, cnt)
+    k = min(n_results, cnt)  # Limit # of results to the # of chunks in the collection
     result = collection.query(
         query_texts=[question],
         n_results=k,
@@ -125,7 +123,7 @@ def query_index(question: str, n_results: int = 5) -> List[Dict[str, Any]]:
         return []
 
     out: List[Dict[str, Any]] = []
-    ids_batch = result["ids"][0]
+    ids_batch = result["ids"][0]  # 0 because we only query one question
     docs_batch = result["documents"][0] if result.get("documents") else []
     meta_batch = result["metadatas"][0] if result.get("metadatas") else []
     dist_batch = result["distances"][0] if result.get("distances") else [None] * len(ids_batch)
@@ -140,17 +138,3 @@ def query_index(question: str, n_results: int = 5) -> List[Dict[str, Any]]:
             }
         )
     return out
-
-
-def chunk_count() -> int:
-    """Return number of vectors in the index, or 0 if missing / no API key."""
-    try:
-        ef = _embedding_function()
-        client = _client()
-        collection = client.get_collection(
-            name=COLLECTION_NAME,
-            embedding_function=ef,
-        )
-        return int(collection.count())
-    except Exception:
-        return 0

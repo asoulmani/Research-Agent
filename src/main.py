@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from . import config
 from . import ingest
 from . import index
+from . import qa
 
 
 # Load environment variables
@@ -36,7 +37,7 @@ def main() -> None:
             print(f"  First chunk preview: {preview!r}")
         print()
 
-    # Build vector index (requires OPENAI_API_KEY in .env or environment)
+    # Build vector index (requires OPENAI_API_KEY in .env)
     try:
         indexed = index.index_documents(chunked)
         print(f"[INFO] Vector index ready ({indexed} vectors).\n")
@@ -48,14 +49,35 @@ def main() -> None:
         return
 
     # Quick retrieval test
-    test_q = "What is self-attention?"
+    test_q = "What are superpixels?"
     hits = index.query_index(test_q, n_results=3)
     print(f"[INFO] Sample query: {test_q!r}")
-    for i, hit in enumerate(hits, 1):
+    for i, hit in enumerate(hits, start=1):
         meta = hit.get("metadata") or {}
         src = meta.get("source_file", "?")
         preview = (hit.get("document") or "")[:160].replace("\n", " ")
         print(f"  {i}. {src} | {preview!r}...")
+        
+    # LLM answer 
+    try:
+        answer, used_hits = qa.answer_question(test_q, top_k=3)
+        print(f"\n[INFO] Answer:\n{answer}\n")
+
+        if used_hits:
+            print("[INFO] Sources used:")
+            for j, hit in enumerate(used_hits, 1):
+                meta = hit.get("metadata") or {}
+                src = meta.get("source_file", "?")
+                chunk_index = meta.get("chunk_index", "?")
+                print(f"  [{j}] {src} (chunk {chunk_index})")
+
+                # Debug: print the exact chunk text that the model saw (used for this citation).
+                chunk_text = hit.get("document") or ""
+                print("  [DEBUG] Chunk text:")
+                print(chunk_text)
+                print()
+    except Exception as e:
+        print(f"[SKIP] QA step: {e}")
 
 
 if __name__ == "__main__":
