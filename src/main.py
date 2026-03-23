@@ -4,6 +4,8 @@ from . import config
 from . import ingest
 from . import index
 
+
+# Load environment variables
 load_dotenv()
 
 
@@ -45,7 +47,7 @@ def main() -> None:
         print(f"[ERROR] Indexing failed: {e}")
         return
 
-    # Quick retrieval smoke test
+    # Quick retrieval test
     test_q = "What is self-attention?"
     hits = index.query_index(test_q, n_results=3)
     print(f"[INFO] Sample query: {test_q!r}")

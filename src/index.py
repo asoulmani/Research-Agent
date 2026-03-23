@@ -10,8 +10,6 @@ from dotenv import load_dotenv
 
 from . import config
 
-load_dotenv()
-
 COLLECTION_NAME = "research_docs"
 
 
