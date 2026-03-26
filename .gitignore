@@ -9,5 +9,11 @@ __pycache__/
 # Chroma / vector index persistence (we'll create this later)
 data/index/
 
+# Keep docs local 
+data/docs/*
+
+# Keep one public example
+!data/docs/attention_paper.pdf
+
 # OS
 .DS_Store
