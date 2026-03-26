@@ -4,8 +4,9 @@ Ingest documents: read text and PDF files, convert to text, and chunk.
 from pathlib import Path
 from typing import Dict, List
 
-from . import config
 from pypdf import PdfReader
+
+from . import chunk, config
 
 
 def read_txt_file(path: Path) -> str:
@@ -32,7 +33,7 @@ def load_documents(doc_dir: Path | None = None) -> Dict[str, str]:
         doc_dir = config.DOCS_DIR
 
     if not doc_dir.exists():
-        raise FileNotFoundError(f"Document directory does not exist: {doc_dir}")
+        raise FileNotFoundError(f"[ERROR] Document directory does not exist: {doc_dir}")
 
     docs: Dict[str, str] = {}
 
@@ -59,44 +60,34 @@ def load_documents(doc_dir: Path | None = None) -> Dict[str, str]:
     return docs
 
 
-def simple_chunk(text: str, max_chars: int = 800, overlap: int = 200) -> List[str]:
-    """
-    Very simple character-based chunking.
-    Not token-aware yet, but good enough for V1.
-    """
-    chunks: List[str] = []
-    start = 0
-    n = len(text)
-
-    if n == 0:
-        return chunks
-
-    while start < n:
-        end = min(start + max_chars, n)
-        chunk = text[start:end].strip()
-        if chunk:
-            chunks.append(chunk)
-        start = end - overlap
-        if start < 0:
-            start = 0
-
-        if end == n:
-            break
-
-    return chunks
-
-
 def chunk_documents(
     docs: Dict[str, str],
+    strategy: str = "token",
     max_chars: int = 800,
     overlap: int = 200,
+    max_tokens: int = 500,
+    overlap_tokens: int = 100,
+    encoding_name: str = "cl100k_base",
 ) -> Dict[str, List[str]]:
     """
     Turn each full document text into a list of chunks.
-    """
-    return {
-        name: simple_chunk(text, max_chars=max_chars, overlap=overlap)
-        for name, text in docs.items()
-    }
 
-    
+    Strategies:
+      - "simple": character-based chunking
+      - "token" : token-aware chunking with paragraph-first packing
+    """
+    if strategy not in {"simple", "token"}:
+        raise ValueError("[ERROR] Strategy must be one of: simple, token")
+
+    out: Dict[str, List[str]] = {}
+    for name, text in docs.items():
+        if strategy == "simple":
+            out[name] = chunk.simple_chunk(text, max_chars=max_chars, overlap=overlap)
+        else:
+            out[name] = chunk.token_chunks(
+                text,
+                max_tokens=max_tokens,
+                overlap_tokens=overlap_tokens,
+                encoding_name=encoding_name,
+            )
+    return out

@@ -18,7 +18,7 @@ def _require_api_key() -> str:
     key = os.environ.get("OPENAI_API_KEY", "").strip()
     if not key:
         raise RuntimeError(
-            "OPENAI_API_KEY is not set. Add it to a .env file in the project root "
+            "[ERROR] OPENAI_API_KEY is not set. Add it to a .env file in the project root "
             "(see .env.example) or export it in your shell."
         )
     return key

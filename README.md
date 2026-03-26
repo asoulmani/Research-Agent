@@ -122,16 +122,6 @@ Prioritized for **signal over hype**:
 
 ---
 
-## What this project is / isn't
-
-| Is | Isn't |
-|----|--------|
-| A credible **RAG systems** portfolio piece | A production SaaS |
-| Easy to **extend and measure** | A framework dump |
-| Honest about **V1 limitations** | “Solved AGI” marketing |
-
----
-
 ## License
 
 Add an explicit license when publishing (e.g. MIT). Until then, default copyright applies unless stated otherwise.
