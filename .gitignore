@@ -6,11 +6,14 @@ __pycache__/
 # Environment / secrets
 .env
 
-# Chroma / vector index persistence (we'll create this later)
-data/index/
+# Chroma / vector index persistence
+data/index/*
+!data/index/
+!data/index/README.md
 
 # Keep docs local 
 data/docs/*
+!data/docs/README.md
 
 # Keep one public example
 !data/docs/attention_paper.pdf
