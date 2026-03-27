@@ -5,7 +5,6 @@ from . import ingest
 from . import index
 from . import qa
 
-
 # Load environment variables
 load_dotenv()
 
@@ -23,19 +22,10 @@ def main() -> None:
     print(f"[INFO] Loaded {len(docs)} documents.")
 
     # Chunk them into smaller pieces
-    chunked = ingest.chunk_documents(docs)
+    chunked = ingest.chunk_documents(docs, strategy="token")  # Choices: "simple" and "token"
 
     total_chunks = sum(len(chunks) for chunks in chunked.values())
     print(f"[INFO] Created {total_chunks} chunks across documents.\n")
-
-    # Show a short preview per document
-    for name, chunks in chunked.items():
-        print(f"--- {name} ---")
-        print(f"  Chunks: {len(chunks)}")
-        if chunks:
-            preview = chunks[0][:200].replace("\n", " ")
-            print(f"  First chunk preview: {preview!r}")
-        print()
 
     # Build vector index (requires OPENAI_API_KEY in .env)
     try:
@@ -49,7 +39,7 @@ def main() -> None:
         return
 
     # Quick retrieval test
-    test_q = "What are superpixels?"
+    test_q = "What is my name? And how many sports do I play and cite them?"
     hits = index.query_index(test_q, n_results=3)
     print(f"[INFO] Sample query: {test_q!r}")
     for i, hit in enumerate(hits, start=1):
@@ -60,7 +50,7 @@ def main() -> None:
         
     # LLM answer 
     try:
-        answer, used_hits = qa.answer_question(test_q, top_k=3)
+        answer, used_hits = qa.answer_question(test_q, top_k=3, hits=hits)
         print(f"\n[INFO] Answer:\n{answer}\n")
 
         if used_hits:

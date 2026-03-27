@@ -1,0 +1,102 @@
+[
+    {
+      "id": "q1",
+      "question": "In \"Attention Is All You Need\", how many layers are used in the encoder stack, and what are the two sub-layers in each encoder layer?",
+      "expected_sources": ["attention_paper.pdf"]
+    },
+    {
+      "id": "q2",
+      "question": "In \"Attention Is All You Need\", what is the scaled dot-product attention formula, and why is the 1/sqrt(d_k) scaling factor used?",
+      "expected_sources": ["attention_paper.pdf"]
+    },
+    {
+      "id": "q3",
+      "question": "In Einstein's 1905 relativity paper, why does defining time become problematic for events at different locations?",
+      "expected_sources": ["electromag.pdf"]
+    },
+    {
+      "id": "q4",
+      "question": "In Einstein's 1905 relativity paper, how are two spatially separated clocks defined as synchronized?",
+      "expected_sources": ["electromag.pdf"]
+    },
+    {
+      "id": "q5",
+      "question": "In the original GAN paper, what minimax objective is used between the generator and discriminator?",
+      "expected_sources": ["gan.pdf"]
+    },
+    {
+      "id": "q6",
+      "question": "In the original GAN paper, what roles do the discriminator and generator play during training updates?",
+      "expected_sources": ["gan.pdf"]
+    },
+    {
+      "id": "q7",
+      "question": "In the first LIGO gravitational-wave detection paper, when was GW150914 observed and how did its frequency and amplitude evolve over time?",
+      "expected_sources": ["gravitational_waves.pdf"]
+    },
+    {
+      "id": "q8",
+      "question": "According to the LIGO discovery paper, what astrophysical system produced GW150914 and what source parameters were inferred?",
+      "expected_sources": ["gravitational_waves.pdf"]
+    },
+    {
+      "id": "q9",
+      "question": "In the AlexNet ImageNet paper, what top-5 error did the model achieve and how did it compare to prior methods in ILSVRC?",
+      "expected_sources": ["imagenet.pdf"]
+    },
+    {
+      "id": "q10",
+      "question": "In the AlexNet paper, which training and regularization techniques were used to make optimization feasible and reduce overfitting?",
+      "expected_sources": ["imagenet.pdf"]
+    },
+    {
+      "id": "q11",
+      "question": "In perceptron learning, how are weights updated after a classification mistake?",
+      "expected_sources": ["perceptron.pdf"]
+    },
+    {
+      "id": "q12",
+      "question": "In discussions of perceptrons, what class of problems cannot be solved by a single-layer linear decision boundary, and why?",
+      "expected_sources": ["perceptron.pdf"]
+    },
+    {
+      "id": "q13",
+      "question": "In Shannon's communication theory paper, what aspect of messages is treated as relevant for engineering and what is explicitly excluded?",
+      "expected_sources": ["shannon_entropy.pdf"]
+    },
+    {
+      "id": "q14",
+      "question": "In Shannon's paper, how is information/uncertainty quantified for a discrete source?",
+      "expected_sources": ["shannon_entropy.pdf"]
+    },
+    {
+      "id": "q15",
+      "question": "In the Superpixel Tokenization paper, what problem can arise from fixed-size patch tokenization in vision transformers?",
+      "expected_sources": ["suit_superpixels.pdf"]
+    },
+    {
+      "id": "q16",
+      "question": "In the Superpixel Tokenization paper, how does grouping pixels into superpixels improve semantic consistency of visual tokens?",
+      "expected_sources": ["suit_superpixels.pdf"]
+    },
+    {
+      "id": "q17",
+      "question": "In Turing's 1950 paper, how is the question \"Can machines think?\" reframed into the imitation game?",
+      "expected_sources": ["turing_paper.pdf"]
+    },
+    {
+      "id": "q18",
+      "question": "In Turing's paper, what major objections to machine intelligence are discussed and how are they answered?",
+      "expected_sources": ["turing_paper.pdf"]
+    },
+    {
+      "id": "q19",
+      "question": "In \"An Image is Worth 16x16 Words\" (ViT), how is an image converted into an input token sequence before transformer encoding?",
+      "expected_sources": ["vits.pdf"]
+    },
+    {
+      "id": "q20",
+      "question": "In the ViT paper, how does pretraining dataset scale affect performance relative to CNNs?",
+      "expected_sources": ["vits.pdf"]
+    }
+  ]

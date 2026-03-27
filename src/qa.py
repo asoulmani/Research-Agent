@@ -3,7 +3,7 @@ QA: use LLM to answer questions based on the retrieved chunks.
 """
 from __future__ import annotations
 
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from openai import OpenAI
 
@@ -30,16 +30,21 @@ def _format_sources(hits: List[Dict[str, Any]], max_chars_per_source: int = 1600
     return "\n\n".join(parts)
 
 
-def answer_question(question: str, top_k: int = 5) -> Tuple[str, List[Dict[str, Any]]]:
+def answer_question(
+    question: str,
+    top_k: int = 5,
+    hits: Optional[List[Dict[str, Any]]] = None,
+) -> Tuple[str, List[Dict[str, Any]]]:
     """
     Retrieval-Augmented QA:
       1) retrieve top_k chunks from Chroma
       2) call an LLM with the retrieved chunks as sources
       3) return (answer_text, hits_used)
     """
-    hits = index.query_index(question, n_results=top_k)
+    if hits is None:
+        hits = index.query_index(question, n_results=top_k)
     if not hits:
-        return "I couldn't find relevant information in the documents.", []
+        return "[INFO] I couldn't find relevant information in the documents.", []
 
     sources_block = _format_sources(hits)
 
