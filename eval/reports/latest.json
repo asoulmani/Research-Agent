@@ -20,7 +20,8 @@
         "attention_paper.pdf"
       ],
       "hit_at_k": 1.0,
-      "reciprocal_rank": 1.0
+      "reciprocal_rank": 1.0,
+      "best_distance": 0.41933774948120117
     },
     {
       "id": "q2",
@@ -36,7 +37,8 @@
         "attention_paper.pdf"
       ],
       "hit_at_k": 1.0,
-      "reciprocal_rank": 1.0
+      "reciprocal_rank": 1.0,
+      "best_distance": 0.3468497395515442
     },
     {
       "id": "q3",
@@ -52,7 +54,8 @@
         "electromag.pdf"
       ],
       "hit_at_k": 1.0,
-      "reciprocal_rank": 1.0
+      "reciprocal_rank": 1.0,
+      "best_distance": 0.4455004930496216
     },
     {
       "id": "q4",
@@ -68,7 +71,8 @@
         "electromag.pdf"
       ],
       "hit_at_k": 1.0,
-      "reciprocal_rank": 1.0
+      "reciprocal_rank": 1.0,
+      "best_distance": 0.38813096284866333
     },
     {
       "id": "q5",
@@ -84,7 +88,8 @@
         "gan.pdf"
       ],
       "hit_at_k": 1.0,
-      "reciprocal_rank": 1.0
+      "reciprocal_rank": 1.0,
+      "best_distance": 0.4112589955329895
     },
     {
       "id": "q6",
@@ -100,7 +105,8 @@
         "gan.pdf"
       ],
       "hit_at_k": 1.0,
-      "reciprocal_rank": 1.0
+      "reciprocal_rank": 1.0,
+      "best_distance": 0.4300140142440796
     },
     {
       "id": "q7",
@@ -116,7 +122,8 @@
         "gravitational_waves.pdf"
       ],
       "hit_at_k": 1.0,
-      "reciprocal_rank": 1.0
+      "reciprocal_rank": 1.0,
+      "best_distance": 0.28356415033340454
     },
     {
       "id": "q8",
@@ -132,7 +139,8 @@
         "gravitational_waves.pdf"
       ],
       "hit_at_k": 1.0,
-      "reciprocal_rank": 1.0
+      "reciprocal_rank": 1.0,
+      "best_distance": 0.31200742721557617
     },
     {
       "id": "q9",
@@ -148,7 +156,8 @@
         "imagenet.pdf"
       ],
       "hit_at_k": 1.0,
-      "reciprocal_rank": 1.0
+      "reciprocal_rank": 1.0,
+      "best_distance": 0.3407108187675476
     },
     {
       "id": "q10",
@@ -164,7 +173,8 @@
         "vits.pdf"
       ],
       "hit_at_k": 1.0,
-      "reciprocal_rank": 1.0
+      "reciprocal_rank": 1.0,
+      "best_distance": 0.4557993412017822
     },
     {
       "id": "q11",
@@ -180,7 +190,8 @@
         "perceptron.pdf"
       ],
       "hit_at_k": 1.0,
-      "reciprocal_rank": 1.0
+      "reciprocal_rank": 1.0,
+      "best_distance": 0.522774338722229
     },
     {
       "id": "q12",
@@ -196,7 +207,8 @@
         "perceptron.pdf"
       ],
       "hit_at_k": 1.0,
-      "reciprocal_rank": 1.0
+      "reciprocal_rank": 1.0,
+      "best_distance": 0.45884859561920166
     },
     {
       "id": "q13",
@@ -212,7 +224,8 @@
         "shannon_entropy.pdf"
       ],
       "hit_at_k": 1.0,
-      "reciprocal_rank": 1.0
+      "reciprocal_rank": 1.0,
+      "best_distance": 0.35876554250717163
     },
     {
       "id": "q14",
@@ -228,7 +241,8 @@
         "shannon_entropy.pdf"
       ],
       "hit_at_k": 1.0,
-      "reciprocal_rank": 1.0
+      "reciprocal_rank": 1.0,
+      "best_distance": 0.3909623622894287
     },
     {
       "id": "q15",
@@ -244,7 +258,8 @@
         "suit_superpixels.pdf"
       ],
       "hit_at_k": 1.0,
-      "reciprocal_rank": 1.0
+      "reciprocal_rank": 1.0,
+      "best_distance": 0.28462082147598267
     },
     {
       "id": "q16",
@@ -260,7 +275,8 @@
         "suit_superpixels.pdf"
       ],
       "hit_at_k": 1.0,
-      "reciprocal_rank": 1.0
+      "reciprocal_rank": 1.0,
+      "best_distance": 0.2921704053878784
     },
     {
       "id": "q17",
@@ -276,7 +292,8 @@
         "turing_paper.pdf"
       ],
       "hit_at_k": 1.0,
-      "reciprocal_rank": 1.0
+      "reciprocal_rank": 1.0,
+      "best_distance": 0.4538828730583191
     },
     {
       "id": "q18",
@@ -292,7 +309,8 @@
         "perceptron.pdf"
       ],
       "hit_at_k": 1.0,
-      "reciprocal_rank": 1.0
+      "reciprocal_rank": 1.0,
+      "best_distance": 0.537003755569458
     },
     {
       "id": "q19",
@@ -308,7 +326,8 @@
         "suit_superpixels.pdf"
       ],
       "hit_at_k": 1.0,
-      "reciprocal_rank": 0.3333333333333333
+      "reciprocal_rank": 0.3333333333333333,
+      "best_distance": 0.3405466675758362
     },
     {
       "id": "q20",
@@ -324,7 +343,8 @@
         "vits.pdf"
       ],
       "hit_at_k": 1.0,
-      "reciprocal_rank": 1.0
+      "reciprocal_rank": 1.0,
+      "best_distance": 0.3390997052192688
     }
   ]
 }

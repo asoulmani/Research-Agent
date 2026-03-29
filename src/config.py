@@ -16,3 +16,8 @@ DEFAULT_EMBEDDING_MODEL: str = "text-embedding-3-small"
 
 # Default chat model
 DEFAULT_CHAT_MODEL: str = "gpt-4.1-mini"
+
+# Retrieval / QA confidence
+# Distance threshold for deciding whether retrieval is confident enough to answer.
+# This should be tuned using eval/reports on the current corpus and embedding model.
+RETRIEVAL_DISTANCE_THRESHOLD: float = 0.75

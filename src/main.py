@@ -39,7 +39,7 @@ def main() -> None:
         return
 
     # Quick retrieval test
-    test_q = "What is my name? And how many sports do I play and cite them?"
+    test_q = "What is my favorite movie?"
     hits = index.query_index(test_q, n_results=3)
     print(f"[INFO] Sample query: {test_q!r}")
     for i, hit in enumerate(hits, start=1):

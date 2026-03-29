@@ -59,6 +59,10 @@ def main():
             for hit in results
         ]
 
+        best_distance = None
+        if results and results[0].get("distance") is not None:
+            best_distance = float(results[0]["distance"])
+
         rows.append(
             {
                 "id": qid,
@@ -67,6 +71,7 @@ def main():
                 "top_sources": top_sources,
                 "hit_at_k": h,
                 "reciprocal_rank": r,
+                "best_distance": best_distance,
             }
         )
 
