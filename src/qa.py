@@ -5,11 +5,20 @@ from __future__ import annotations
 
 import json
 import re
+import unicodedata
 from typing import Any, Dict, List, Optional, Tuple
 
 from openai import OpenAI
 
 from . import config, index
+
+
+def _source_text_for_prompt(hit: Dict[str, Any], max_chars_per_source: int = 1600) -> str:
+    """
+    Return exactly the text shown to the model for a given hit (truncated).
+    Keeping this centralized avoids mismatches between prompt content and validation.
+    """
+    return ((hit.get("document") or "").strip())[:max_chars_per_source]
 
 
 def _format_sources(hits: List[Dict[str, Any]], max_chars_per_source: int = 1600) -> str:
@@ -21,15 +30,32 @@ def _format_sources(hits: List[Dict[str, Any]], max_chars_per_source: int = 1600
         meta = hit.get("metadata") or {}
         source_file = meta.get("source_file", "?")
         chunk_index = meta.get("chunk_index", "?")
-        text = (hit.get("document") or "").strip()
-
-        # Truncate to keep prompts smaller (V1: simple character limit).
-        text = text[:max_chars_per_source]
+        text = _source_text_for_prompt(hit, max_chars_per_source=max_chars_per_source)
 
         parts.append(
             f"[{i}] {source_file} (chunk {chunk_index}):\n{text}"
         )
     return "\n\n".join(parts)
+
+
+def _normalize_for_quote_match(text: str) -> str:
+    """
+    Normalize text for robust "quote is contained in source" checks.
+    PDF extraction often introduces:
+    - odd unicode (ligatures, non-breaking spaces)
+    - soft hyphens
+    - line-break hyphenation
+    - inconsistent whitespace
+    """
+    if not text:
+        return ""
+    t = unicodedata.normalize("NFKC", text)
+    t = t.replace("\u00ad", "")  # soft hyphen
+    t = t.replace("\u00a0", " ")  # non-breaking space
+    # Join common hyphenation artifacts across whitespace/newlines: "super-\n pixels" -> "superpixels"
+    t = re.sub(r"(\w)-\s+(\w)", r"\1\2", t)
+    t = re.sub(r"\s+", " ", t).strip()
+    return t
 
 
 def answer_question(
@@ -72,6 +98,14 @@ def answer_question(
         "For yes/no questions, if polarity is not explicitly supported, do NOT guess; instead answer using the sources' definition/description and state that the sources do not explicitly say yes/no.\n\n"
     )
 
+    support_rule = (
+        f"If you cannot find direct support, respond with supported=false and answer exactly: \"{abstain}\".\n\n"
+        if policy == "strict"
+        else "If the sources do not explicitly support a yes/no polarity, do not guess. "
+        "You may answer using explicit definitions or descriptions from the sources, but only if your answer is directly grounded in quoted text. "
+        f"If you cannot ground the answer in the sources, respond with supported=false and answer exactly: \"{abstain}\".\n\n"
+    )
+
     messages = [
         {
             "role": "system",
@@ -80,7 +114,7 @@ def answer_question(
                 "Do NOT use any outside knowledge. "
                 "A claim is supported only if it is explicitly stated in the sources or is a minimal paraphrase. "
                 "You MUST identify verbatim supporting quotes from the sources, then answer ONLY from those quotes. "
-                f"If you cannot find direct support, respond with supported=false and answer exactly: \"{abstain}\".\n\n"
+                + support_rule
                 + policy_block
                 + "Output MUST be valid JSON in this exact schema (no markdown fences, no extra text):\n"
                 "{\n"
@@ -93,7 +127,8 @@ def answer_question(
                 f"- If supported=false: answer MUST equal \"{abstain}\", citations MUST be [], supporting_spans MUST be [].\n"
                 "- If supported=true: supporting_spans MUST contain at least one item.\n"
                 "- Each quote must be copied verbatim from a source chunk.\n"
-                "- citations must match the source_id values used in supporting_spans.\n"
+                "- Quotes must be short (<= 240 characters) and directly copy-pasted from the chunk.\n"
+                "- Citations must match the source_id values used in supporting_spans.\n"
                 "- Keep answer to 1-2 concise sentences.\n"
                 + (
                     "- Yes/No questions: apply the selected policy rules above.\n"
@@ -130,10 +165,14 @@ def answer_question(
             payload = None
 
         if not isinstance(payload, dict):
+            # If the JSON is not valid, retry the prompt.
             messages[0]["content"] = messages[0]["content"] + " STRICT REWRITE: Return only valid JSON (no extra text)."
             continue
 
-        supported = bool(payload.get("supported"))
+        supported = payload.get("supported")
+        if not isinstance(supported, bool):
+            messages[0]["content"] = messages[0]["content"] + " STRICT REWRITE: 'supported' must be a boolean."
+            continue
         answer = payload.get("answer")
         citations = payload.get("citations")
         spans = payload.get("supporting_spans")
@@ -147,7 +186,8 @@ def answer_question(
         if not isinstance(spans, list):
             messages[0]["content"] = messages[0]["content"] + " STRICT REWRITE: 'supporting_spans' must be a list."
             continue
-
+        
+        # supported == False
         if not supported:
             if answer.strip() != abstain or citations != [] or spans != []:
                 messages[0]["content"] = (
@@ -176,9 +216,25 @@ def answer_question(
             if sid < 1 or sid > len(hits):
                 ok_spans = False
                 break
+            if len(quote) > 240:
+                ok_spans = False
+                break
+
+            # Verify the quote is actually present in the corresponding chunk (whitespace-normalized).
+            source_text = _normalize_for_quote_match(
+                _source_text_for_prompt(hits[sid - 1], max_chars_per_source=1600)
+            )
+            quote_text = _normalize_for_quote_match(quote)
+            if not quote_text or quote_text not in source_text:
+                ok_spans = False
+                break
+
             span_ids.append(sid)
         if not ok_spans:
-            messages[0]["content"] = messages[0]["content"] + " STRICT REWRITE: Each supporting span must be {source_id:int, quote:str} with valid source_id."
+            messages[0]["content"] = (
+                messages[0]["content"]
+                + " STRICT REWRITE: Each supporting span must be {source_id:int, quote:str} with valid source_id, and each quote must appear verbatim in the cited source."
+            )
             continue
 
         if sorted(set(citations)) != sorted(set(span_ids)):
