@@ -50,8 +50,8 @@ def _normalize_for_quote_match(text: str) -> str:
     if not text:
         return ""
     t = unicodedata.normalize("NFKC", text)
-    t = t.replace("\u00ad", "")  # soft hyphen
-    t = t.replace("\u00a0", " ")  # non-breaking space
+    t = t.replace("\u00ad", "")  # Soft hyphen
+    t = t.replace("\u00a0", " ")  # Non-breaking space
     # Join common hyphenation artifacts across whitespace/newlines: "super-\n pixels" -> "superpixels"
     t = re.sub(r"(\w)-\s+(\w)", r"\1\2", t)
     t = re.sub(r"\s+", " ", t).strip()
@@ -66,9 +66,9 @@ def answer_question(
 ) -> Tuple[str, List[Dict[str, Any]]]:
     """
     Retrieval-Augmented QA:
-      1) retrieve top_k chunks from Chroma
-      2) call an LLM with the retrieved chunks as sources
-      3) return (answer_text, hits_used)
+      1) Retrieve top_k chunks from Chroma
+      2) Call an LLM with the retrieved chunks as sources
+      3) Return (answer_text, hits_used)
     """
     if hits is None:
         hits = index.query_index(question, n_results=top_k)
@@ -147,7 +147,7 @@ def answer_question(
         },
     ]
 
-    for attempt in range(2):  # retry once to fix formatting/contract issues
+    for _ in range(2):  # Retry once to fix formatting/contract issues
         resp = client.chat.completions.create(
             model=config.DEFAULT_CHAT_MODEL,
             messages=messages,
@@ -241,7 +241,7 @@ def answer_question(
             messages[0]["content"] = messages[0]["content"] + " STRICT REWRITE: citations must match supporting_spans source_id values."
             continue
 
-        # Heuristic: keep the display format you're already using (markdown + [1] citations).
+        # Heuristic: keep the display format 
         cites_md = "".join(f"[{i}]" for i in sorted(set(citations)))
         final_answer = f"{answer.strip()} {cites_md}".strip()
         return final_answer, hits
