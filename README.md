@@ -140,4 +140,4 @@ Main knobs live in `src/config.py`:
 
 ## License
 
-No license file yet; add one (e.g. MIT) before you treat this as open source.
+No license file yet;
