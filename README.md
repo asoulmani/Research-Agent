@@ -130,14 +130,6 @@ Main knobs live in `src/config.py`:
 
 ---
 
-## Roadmap (what I’d add next)
-
-- **Quote verification in code** — reject spans that are not literal substrings of the retrieved chunk (stricter than prompt-only).  
-- **Optional second-pass verifier** — small model call: “is every sentence supported by the quotes?”  
-- **Docker** — one command to run UI + index volume.  
-
----
-
 ## License
 
 No license file yet;
